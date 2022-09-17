@@ -86,4 +86,6 @@ class MarkovWordGenerator():
         while c != DELIMITER_END:
             word += c
             c = self.select_next_chars(previous_chars=word[-self.markov_length:])
+        if word[-1] == DELIMITER_END:
+            word = word[:-1]
         return word
