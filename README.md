@@ -2,7 +2,7 @@
 # markov-word-generator
 [![PyPI version](https://badge.fury.io/py/markov-word-generator.svg)](https://badge.fury.io/py/markov-word-generator) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)`
 
-A small Python library to generate random credible words based on a  list of words by estimating the probability of the next character from the frequency of the previous N ones.
+A small Python library to generate random credible/plausible words based on a  list of words by estimating the probability of the next character from the frequency of the previous N ones.
 This uses [Markov chain](https://en.wikipedia.org/wiki/Markov_chain)
 
 
