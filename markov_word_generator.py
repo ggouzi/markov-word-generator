@@ -2,6 +2,7 @@ from collections import defaultdict
 import unidecode
 import random
 from dataclasses import dataclass, field
+from enum import Enum
 
 
 DELIMITER_END = '$'
@@ -27,6 +28,29 @@ def normalize_hash(h):
     return weights
 
 
+class WordType(Enum):
+    WORD = "WORD"
+    NAME = "NAME"
+
+
+class AllowedLanguages(Enum):
+    EN = "EN"
+    FR = "FR"
+    DE = "DE"
+    FI = "FI"
+    IT = "IT"
+    PT = "PT"
+    SE = "SE"
+
+
+def get_supported_languages():
+    return [l.value for l in AllowedLanguages]
+
+
+def get_supported_word_types():
+    return [w.value for w in WordType]
+
+
 @dataclass
 class MarkovWordGenerator():
 
@@ -36,12 +60,39 @@ class MarkovWordGenerator():
     and generate a random word from this mapping table using the last N digit apparition frequency (Markov chain of lenth N)
     """
     markov_length: int
-    dictionary_filename: str
+    language: AllowedLanguages | None = None
+    word_type: WordType | None = None
+    dictionary_filename: str | None = None
     ignore_accents: bool = False
     mapping_chars: dict = field(init=False)
 
     def __post_init__(self):
         self.mapping_chars = defaultdict(int)
+        # Check language/word_type and dictionary_filename are mutually exclusive
+        if ((self.language or self.word_type) and self.dictionary_filename):
+            print("Error: Either language and word_type parameters must be set, or use a custom dictionary_filename. dictionary_filename parameter cannot be set if either language or word_type is set")
+            return
+        # Check language/word_type or dictionary_filename are set
+        if (not (self.language or self.word_type) and not self.dictionary_filename):
+            print("Error: Either language and word_type parameters must be set, or use a custom dictionary_filename. dictionary_filename parameter cannot be set if either language or word_type is set")
+            return
+        if self.dictionary_filename is None:
+            # Check word_type is correctly set
+            if not isinstance(self.word_type, WordType):
+                print(f"word_type can only be one of the allowed word types: {get_supported_word_types()}")
+                return
+            # Check language is correctly set
+            if isinstance(self.language, str):
+                if self.language.upper() not in [l.value for l in AllowedLanguages]:
+                    print(f"language {self.language} is not supported yet. language can only either be: {get_supported_languages()}")
+                    return
+            elif (not isinstance(self.language, AllowedLanguages)):
+                print(f"language {self.language} is not supported yet. language can only either be: {get_supported_languages()}")
+                return
+            else:
+                self.language = self.language.value
+        if (self.dictionary_filename is None):
+            self.dictionary_filename = f"dictionaries/{self.language.upper()}-{self.word_type.value.lower()}s.dic"
         with open(self.dictionary_filename) as list:
             for word in list:
                 word = '^' + word.lower().replace('\n', DELIMITER_END).replace('.', '')
@@ -78,6 +129,11 @@ class MarkovWordGenerator():
         return False
 
     def generate_word(self, seed=''):
+        """
+        Function to generate a word based on the MarkovWordGenerator object
+        Will stop when end delimitor is the next generated character
+        Can be customized with a given seed that sets the first characters to start the word with
+        """
         c = self.select_next_chars(previous_chars='^' + seed)
         if c == DELIMITER_END:
             return seed
