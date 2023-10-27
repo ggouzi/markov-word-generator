@@ -38,11 +38,13 @@ The generator will parse an input text file containing one word per line (dictio
 Parsing the English dictionary to create a pseudo-word that sounds English by generating characters one by one.
 In this example, it works by analyzing the probability of each character to appear based on the last 4 ones.
 ```python
-from markov_word_generator import MarkovWordGenerator
+from markov_word_generator import MarkovWordGenerator, WordType
 
+# Generate a random word in English by predicting the probability of each new character based on its last 4 last characters
 generator = MarkovWordGenerator(
 	markov_length=4,
-	dictionary_filename='dictionaries/EN-words.dic'
+	language='en',
+	word_type=WordType.WORD,
 )
 print(generator.generate_word())
 ```
@@ -56,22 +58,44 @@ rebutaneously
 ## Parameters
 
 - MarkovWordGenerator():
-  - `markov_length`: *int*. Number of previous characters the generator will take into account to compute probability of apparition of each the next character.
-   - `dictionary_filename`: *str*. Corpus the generator will parse to analyze character apparition frequency
-   - `ignore_accents`: *Optional boolean*. If set to *True*, Accents will not be considered while parsing *dictionary_filename*. Default to *False*
+	- `markov_length`: *int*. Number of previous characters the generator will take into account to compute probability of apparition of each the next character.
+	- `language`: *str*. Language to use to generate the word. Must be part of the supported languages.
+	- `word_type`: *str*. Type of word to generate. Must be part of the supported word types.
+  - `dictionary_filename`: *str*. Corpus the generator will parse to analyze character apparition frequency. Must be used only if `language` and `word_type` are not set.
+  - `ignore_accents`: *Optional boolean*. If set to *True*, Accents will not be considered while parsing *dictionary_filename*. Default to *False*
 
 - generate_word()
   - seed: *Optional str*. If seed is set, it will generate a word starting with this seed
-```
-generator = MarkovWordGenerator(
-	markov_length=4,
-	dictionary_filename='dictionaries/EN-words.dic')
+```python
+from markov_word_generator import MarkovWordGenerator, WordType, AllowedLanguages
 
-print(generator.generate_word(seed='ab'))
+# Generate a random German name by predicting the probability of each new character based on its last 3 last characters
+generator = MarkovWordGenerator(
+	markov_length=3,
+	language=AllowedLanguages.DE,
+	word_type=WordType.NAME,
+)
+print(generator.generate_word())
 ```
 ```
-abackle
+ludgerten
 ```
+
+## Supported languages and word_types
+```python
+import markov_word_generator
+
+# List supported languages
+print(markov_word_generator.get_supported_languages())
+# ['EN', 'FR', 'DE', 'FI', 'IT', 'PT', 'SE']
+
+# List supported word_type
+print(markov_word_generator.get_supported_word_types())
+# ['WORD', 'NAME']
+
+```
+
+More languages and word types (plants, movie names, cities...) can be added in the future.
 
 
 ## Impact of the markov_length parameter
@@ -80,9 +104,12 @@ abackle
 - Lowering N will lead to words that sound less real. Some words will also either very short (1-2 chars) or very long (>20chars)
 
 ```python
+from markov_word_generator import MarkovWordGenerator, WordType, AllowedLanguages
+
 generator = MarkovWordGenerator(
 	markov_length=N, # N=1,2,3,4 or 5 in following examples
-	dictionary_filename='dictionaries/EN-words.dic'
+	language=AllowedLanguages.EN,
+	word_type=WordType.WORD
 )
 
 for i in range(0, 10):
