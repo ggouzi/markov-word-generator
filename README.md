@@ -2,8 +2,8 @@
 # markov-word-generator
 [![PyPI version](https://badge.fury.io/py/markov-word-generator.svg)](https://badge.fury.io/py/markov-word-generator) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)`
 
-A small Python library to generate random credible/plausible words based on a  list of words by estimating the probability of the next character from the frequency of the previous N ones.
-This uses [Markov chain](https://en.wikipedia.org/wiki/Markov_chain)
+Markov-Word-Generator is a Python library for generating random, credible, and plausible words based on a list of words. It estimates the probability of the next character in a word based on the frequency of the previous N characters, using Markov chains.
+This uses [Markov chains](https://en.wikipedia.org/wiki/Markov_chain)
 
 
 # Installation
@@ -13,8 +13,7 @@ pip install markov-word-generator
 
 # Principle
 
-In order to generate random words that sounds like real words, we need to analyze character distribution among a corpus in a given language.
-We can start by analyzing the character apparition frequency based on the previous character.
+To generate random words that sound like real words, this library analyzes character distribution among a corpus in a given language. It creates a mapping table for character combinations and their associated frequency in the corpus. By estimating the probability of a character based on the previous characters, the library generates words that mimic real language patterns.
 
 Here are heatmaps showing the distribution of each character (column) given the previous one (row).
 - `$` = End of word
@@ -35,8 +34,9 @@ The generator will parse an input text file containing one word per line (dictio
 ![enter image description here](https://raw.githubusercontent.com/ggouzi/markov-word-generator/main/images/diagram.png)
 
 # Usage
-Parsing the English dictionary to create a pseudo-word that sounds English by generating characters one by one.
-In this example, it works by analyzing the probability of each character to appear based on the last 4 ones.
+
+To generate a random word in English by predicting the probability of each new character based on the last 4 characters, you can use the following code:
+
 ```python
 from markov_word_generator import MarkovWordGenerator, WordType
 
@@ -58,14 +58,15 @@ rebutaneously
 ## Parameters
 
 - MarkovWordGenerator():
-	- `markov_length`: *int*. Number of previous characters the generator will take into account to compute probability of apparition of each the next character.
-	- `language`: *str*. Language to use to generate the word. Must be part of the supported languages.
-	- `word_type`: *str*. Type of word to generate. Must be part of the supported word types.
-  - `dictionary_filename`: *str*. Corpus the generator will parse to analyze character apparition frequency. Must be used only if `language` and `word_type` are not set.
-  - `ignore_accents`: *Optional boolean*. If set to *True*, Accents will not be considered while parsing *dictionary_filename*. Default to *False*
+	- `markov_length`: (int): The number of previous characters to consider.
+	- `language`: (str): The language to use for word generation. **Must be part of the supported languages**.
+	- `word_type`:  (str): The type of word to generate. **Must be part of the supported word types**.
+  - `dictionary_filename`: (str): The corpus to parse for character frequency analysis. **Must be used only if `language` and `word_type` are not set**.
+  - `ignore_accents`:  (bool): If set to *True*, accents are ignored during parsing. Default to *False*
 
 - generate_word()
-  - seed: *Optional str*. If seed is set, it will generate a word starting with this seed
+  - seed: (str): Seed to generate a word starting with the given seed. Default to empty
+
 ```python
 from markov_word_generator import MarkovWordGenerator, WordType, AllowedLanguages
 
@@ -82,6 +83,9 @@ ludgerten
 ```
 
 ## Supported languages and word_types
+
+You can access the list of supported languages and word types using the following functions:
+
 ```python
 import markov_word_generator
 
