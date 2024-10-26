@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name='markov_word_generator',
-    version='0.5',
+    version='0.6',
     description='A small Python librairy to generate random credible words based on a list of words by esimating the probability of the next character from the frequency of the previous ones',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -16,5 +16,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'Unidecode',
-    ]
+    ],
+    py_modules=["markov_word_generator"]
 )
+
