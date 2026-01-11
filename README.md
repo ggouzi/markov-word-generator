@@ -27,7 +27,7 @@ And in French:
 
 ![French character distribution](https://raw.githubusercontent.com/ggouzi/markov-word-generator/main/images/heatmap_FR-words.png)
 
-Estimating the probability of a character to appear given the probability of the given previous one works fine but is still hazardous. We can increase the likelihood of the world sounds true by looking at the next N previous characters.
+Estimating the probability of a character to appear given the probability of the given previous one works fine but is still hazardous. We can increase the likelihood that the word sounds true by looking at the previous N characters.
 
 The generator will parse an input text file containing one word per line (dictionary), count each character occurrence based on the occurrence of the N previous ones  create a mapping table for each character-combination and its associated frequency in the corpus.
 
